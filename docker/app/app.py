@@ -43,33 +43,11 @@ def insert_cassandra(short_url, long_url):
 		return True
 	except Exception:
 		return False
-'''		
-def timeCassandra(yearStart, yearEnd):     
-	userids = [ "userid"+str(i) for i in range(10) ]
-        start_time = time.time() 
-	count = 0
-	insert_statement = """
-	INSERT INTO calendar (userid, year, month, day, event)
-	VALUES (%s, %s, %s, %s, %s);
-	"""
-	for userid in userids:
-		for year in range(yearStart,yearEnd): 
-			for month in range(1,13):
-				for day in range(1,32):
-					event = "{} {} {} {}".format(userid, year, month, day)
-	                                session.execute(insert_statement, (userid, year, month, day, event))
-		                        count = count + 1
 
-	end_time = time.time()
-	report = "Cassandra: {} inserts in {} seconds".format(count, (end_time - start_time))
-	print(report)
-	return report  
-'''
 
-'''
 def get_cassandra(short_url):
 	return ''
-'''
+
 
 app = Flask(__name__)
 
