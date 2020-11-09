@@ -1,1 +1,2 @@
-{short_url:long_url}
+Execution Results:
+ Cassandra: 3720 inserts in 1.79681801796 seconds
