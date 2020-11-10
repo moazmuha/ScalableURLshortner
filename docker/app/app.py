@@ -91,7 +91,7 @@ def getRequest(short):
 					redirectTo = "http://"+short
 				return redirect(redirectTo, code=302)
 			else:
-				#check cassandra before this
+				#check cassandra and add entry to redis with expiry. If not in cassandra give error below
 				return Response("The provided short: {} does not exist".format(short), 404)
 		except RedisError:
 			return Response("An error occured related to redis", 404)
