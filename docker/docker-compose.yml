@@ -2,7 +2,7 @@ version: "3.8"
 services:
   web:
     # replace username/repo:tag with your name and image details
-    image: obsoleete/a2:urlshorts
+    image: a2_new:latest
     deploy:
       replicas: 1
       restart_policy:
