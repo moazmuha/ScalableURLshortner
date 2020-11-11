@@ -1,0 +1,8 @@
+#!/bin/bash
+CWD="`pwd`";
+docker stop $1
+echo one container shutdown
+for req in `cat requests`
+do
+    curl -X PUT $req 
+done

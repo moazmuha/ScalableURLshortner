@@ -1,6 +1,10 @@
 #!/bin/bash
+start=`date +%s`
 CWD="`pwd`";
 for req in `cat requests`
 do
     curl -X PUT $req
 done
+end=`date +%s`
+runtime=$((end-start))
+echo $runtime
