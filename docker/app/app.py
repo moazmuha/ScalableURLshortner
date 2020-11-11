@@ -7,6 +7,7 @@ from flask import Flask, request, Response, redirect
 import time
 import os
 import socket
+from datetime import datetime
 
 redis = Redis(host="redis", db=0, socket_connect_timeout=2, socket_timeout=2)
 
@@ -26,6 +27,8 @@ cluster = Cluster(execution_profiles={EXEC_PROFILE_DEFAULT: profile})
 cluster = Cluster(['10.11.12.20', '10.11.12.21', '10.11.12.22', '10.11.12.233', '10.11.12.234'])
 # # session = cluster.connect()
 session = cluster.connect('a2')
+sessionLOG = cluster.connect('log')
+
 
 # # session.set_keyspace('users')
 # # or you can do this instead
@@ -39,6 +42,15 @@ def insert_cassandra(short_url, long_url):
 	VALUES (%s, %s);
 	"""
 	session.execute(insert_statement, (short_url, long_url))
+
+
+def insert_cassandraLOG(datetime, log):
+
+	insert_statement = """
+	INSERT INTO logs (datetime, log)
+	VALUES (%s, %s);
+	"""
+	sessionLOG.execute(insert_statement, (datetime, log))
 
 # Get the long associated with the given short from the cassandra
 # database and also stores the short and long into the redis database
@@ -82,8 +94,16 @@ def put_request():
 			short_url = args['short']
 			long_url = args['long']
 			insert_cassandra(short_url, long_url)
+			now = datetime.now()
+			nowStr = now.strftime("%d/%m/%Y %H:%M:%S")
+			logString = "Successful put request made with short {} and long {} at {}\n".format(short_url, long_url, nowStr)
+			insert_cassandraLOG(nowStr, logString)
 			return Response('Succeeded\n', status=200)
 		else:
+			now = datetime.now()
+			nowStr = now.strftime("%d/%m/%Y %H:%M:%S")
+			logString = "Failed put request made with short {} and long {}\n".format(short_url, long_url)
+			insert_cassandraLOG(nowStr, logString)
 			return Response('Invalid Format\n', status=400)
 	
 # Get route to obtain the long associated with the given short	
