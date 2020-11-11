@@ -97,7 +97,7 @@ def put_request():
 			now = datetime.now()
 			nowStr = now.strftime("%d/%m/%Y %H:%M:%S")
 			logString = "Successful put request made with short {} and long {} at {}\n".format(short_url, long_url, nowStr)
-			insert_cassandraLOG(nowSTR, logString)
+			insert_cassandraLOG(nowStr, logString)
 			return Response('Succeeded\n', status=200)
 		else:
 			now = datetime.now()
