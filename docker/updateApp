@@ -1,5 +1,4 @@
 #!/bin/bash
-
 docker build -t obsoleete/a2_new:latest .
 docker push obsoleete/a2_new:latest
 docker stack deploy -c docker-compose.yml urlShortner

@@ -87,57 +87,57 @@ app = Flask(__name__)
 @app.route("/", methods=['PUT'])
 def put_request():
     if request.method == 'PUT':
-		args = request.args
+	    args = request.args
 		# Checks if the url is valid
-		if 'short' in args and 'long' in args:
+	    if 'short' in args and 'long' in args:
 			# Add to Cassandra
-			short_url = args['short']
-			long_url = args['long']
-			insert_cassandra(short_url, long_url)
-			now = datetime.now()
-			nowStr = now.strftime("%d/%m/%Y %H:%M:%S")
-			logString = "Successful put request made with short {} and long {} at {}\n".format(short_url, long_url, nowStr)
-			insert_cassandraLOG(nowStr, logString)
-			return Response('Succeeded\n', status=200)
-		else:
-			now = datetime.now()
-			nowStr = now.strftime("%d/%m/%Y %H:%M:%S")
-			logString = "Failed put request made with short {} and long {}\n".format(short_url, long_url)
-			insert_cassandraLOG(nowStr, logString)
-			return Response('Invalid Format\n', status=400)
+		    short_url = args['short']
+		    long_url = args['long']
+		    insert_cassandra(short_url, long_url)
+		    now = datetime.now()
+		    nowStr = now.strftime("%d/%m/%Y %H:%M:%S")
+		    logString = "Successful put request made with short {} and long {} at {}\n".format(short_url, long_url, nowStr)
+		    insert_cassandraLOG(nowStr, logString)
+		    return Response('Succeeded\n', status=200)
+	    else:
+		    now = datetime.now()
+		    nowStr = now.strftime("%d/%m/%Y %H:%M:%S")
+		    logString = "Failed put request made with short {} and long {}\n".format(short_url, long_url)
+		    insert_cassandraLOG(nowStr, logString)
+		    return Response('Invalid Format\n', status=400)
+
 
 # Get route to obtain the long associated with the given short
 @app.route("/<short>", methods=['GET'])
 def get_request(short):
     
-        if request.method == 'GET':
+	if request.method == 'GET':
+		# Checks to see if the short is within the cache
+		try:
+			if redis.exists(short):
+				long_url = redis.get(short)
+				logString = "Successful GET request made for short {} correspinding to long {}\n".format(short,long_url)
+				now = datetime.now()
+				nowStr = now.strftime("%d/%m/%Y %H:%M:%S")
+				insert_cassandraLOG(nowStr, logString)
+				return redirect(long_url, code=307)
 
-                # Checks to see if the short is within the cache
-                try:
-					if redis.exists(short):
-						long_url = redis.get(short)
-						logString = "Successful GET request made for short {} correspinding to long {}\n".format(short,long_url)
-						now = datetime.now()
-						nowStr = now.strftime("%d/%m/%Y %H:%M:%S")
-						insert_cassandraLOG(nowStr, logString)
-						return redirect(long_url, code=307)
+		except RedisError:
+				return Response("An error occurred related to redis", 404)
 
-                except RedisError:
-                        return Response("An error occurred related to redis", 404)
+		# Retrieve the long if available
+		long_url = get_cassandra(short)
 
-                # Retrieve the long if available
-                long_url = get_cassandra(short)
-
-                # Checks to see if the short is in the main database and if its not
-                # returns a 404 error
-                if long_url:
-					logString = "Failed GET request made for short {}\n".format(short)
-					now = datetime.now()
-					nowStr = now.strftime("%d/%m/%Y %H:%M:%S")
-					insert_cassandraLOG(nowStr, logString)
-					return redirect(long_url, code=307)
-                else:
-                    return Response('Page does not exist\n', status=404)
+		# Checks to see if the short is in the main database and if its not
+		# returns a 404 error
+		if long_url:
+			logString = "Failed GET request made for short {}\n".format(short)
+			now = datetime.now()
+			nowStr = now.strftime("%d/%m/%Y %H:%M:%S")
+			insert_cassandraLOG(nowStr, logString)
+			return redirect(long_url, code=307)
+		else:
+			return Response('Page does not exist\n', status=404)
 
 if __name__ == "__main__":
         app.run(host='0.0.0.0', port=80, threaded=True)
