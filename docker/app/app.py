@@ -88,11 +88,11 @@ app = Flask(__name__)
 def put_request():
     if request.method == 'PUT':
 	    args = request.args
+	    short_url = args['short']
+	    long_url = args['long']
 		# Checks if the url is valid
 	    if 'short' in args and 'long' in args:
 			# Add to Cassandra
-		    short_url = args['short']
-		    long_url = args['long']
 		    insert_cassandra(short_url, long_url)
 		    now = datetime.now()
 		    nowStr = now.strftime("%d/%m/%Y %H:%M:%S")
