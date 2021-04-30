@@ -1,9 +1,7 @@
 #!/bin/bash
-"""
-Script to deploy the stack with all the necessary docker services. 
-Sample use: ./startDockerService user@192.168.22.130 user@192.168.22.131 ...
-Manager node will be the first node provided 
-"""
+# Script to deploy the stack with all the necessary docker services. 
+# Sample use: ./startDockerService user@192.168.22.130 user@192.168.22.131 ...
+# Manager node will be the first node provided 
 
 USAGE="Usage: $0 USER@IP1 USER@IP2 USER@IP3 ..."
 
@@ -41,9 +39,10 @@ while (( "$#" )); do
 done
 
 # Building, pushing image and deploying stack
-docker login
-docker build -t moazmuha/urlshortner:latest .
-docker push moazmuha/urlshortner:latest
+# docker login
+# docker build -t moazmuha/urlshortner:latest .
+# docker push moazmuha/urlshortner:latest
+docker build -t urlshortner:latest .
 docker stack deploy -c docker-compose.yml urlShortner
 echo "Wait 15 seconds for docker to deploy"
 
