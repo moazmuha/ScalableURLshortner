@@ -1,4 +1,10 @@
 #!/bin/bash
+"""
+Script to set up Cassandra cluster.
+Sample use: ./startCassandraCluster user@192.168.22.130 user@192.168.22.131 ...
+Master node will be on the first server provided
+"""
+
 USAGE="Usage: $0 USER@IP1 USER@IP2 USER@IP3 ..."
 
 # Set @ as delimiter to split input
@@ -32,7 +38,6 @@ while (( "$#" )); do
 	while true;
 	do
 		sleep 5
-		# extract ip
 		STATUS=$(docker exec -it cassandra-node nodetool status | grep -e $IP)
 		STATUSUN=$(echo $STATUS | grep -e "UN")
 		echo $STATUS

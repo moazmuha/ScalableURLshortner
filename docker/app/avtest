@@ -1,4 +1,8 @@
 #!/bin/bash
+"""
+Shutsdown one container then attempts to make all requests 
+Use: ./avtest [DOCKER_CONTAINER_ID]
+"""
 CWD="`pwd`";
 docker stop $1
 echo one container shutdown

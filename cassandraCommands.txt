@@ -1,5 +1,10 @@
+"""
+Commands to run in the shell to create the necessary KEYSPACE and TABLES for the URL shorther application
+"""
+
 docker exec -it cassandra-node bash 
 cqlsh
+
 CREATE KEYSPACE records WITH replication = {'class': 'SimpleStrategy', 'replication_factor' : 2};
 USE records;
 CREATE TABLE urlshorts (

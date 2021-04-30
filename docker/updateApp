@@ -1,4 +1,8 @@
 #!/bin/bash
+"""
+Script to update the docker stack deployment if you make any chnages 
+to the application.
+"""
 docker build -t moazmuha/urlshortner:latest .
 docker push moazmuha/urlshortner:latest
 docker stack deploy -c docker-compose.yml urlShortner

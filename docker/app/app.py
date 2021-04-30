@@ -12,31 +12,13 @@ from datetime import datetime
 
 redis = Redis(host="redis", db=0, socket_connect_timeout=2, socket_timeout=2)
 
-'''
-profile = ExecutionProfile(
-        load_balancing_policy=WhiteListRoundRobinPolicy(['127.0.0.1']),
-        retry_policy=DowngradingConsistencyRetryPolicy(),
-        consistency_level=ConsistencyLevel.LOCAL_QUORUM,
-        serial_consistency_level=ConsistencyLevel.LOCAL_SERIAL,
-        request_timeout=15,
-        row_factory=tuple_factory
-)
-# Can pass in execution profile
-cluster = Cluster(execution_profiles={EXEC_PROFILE_DEFAULT: profile})
-'''
-# # IPS : 10.11.12.20, 10.11.12.21, 10.11.12.22, 10.11.12.233, 10.11.12,234
-# cluster = Cluster(['10.11.12.20', '10.11.12.21', '10.11.12.22', '10.11.12.233', '10.11.12.234'])
+# Replace IPs with your server IPs
 cluster = Cluster(['192.168.22.131', '192.168.22.129', '192.168.22.132'])
-# # session = cluster.connect()
+# Connecting to tables in Cassandra
 session = cluster.connect('records')
 sessionLOG = cluster.connect('log')
 
-
-# # session.set_keyspace('users')
-# # or you can do this instead
-# # session.execute('USE users')
-
-# Inserts the short and the long into the cassandra database
+# Inserts the short and the long into records table in the Cassandra database
 def insert_cassandra(short_url, long_url):
 
 	insert_statement = """
@@ -45,7 +27,7 @@ def insert_cassandra(short_url, long_url):
 	"""
 	session.execute(insert_statement, (short_url, long_url))
 
-
+# Insert log in in logs table in the Cassandra database
 def insert_cassandraLOG(datetime, log):
 
 	insert_statement = """
@@ -55,8 +37,8 @@ def insert_cassandraLOG(datetime, log):
 	sessionLOG.execute(insert_statement, (datetime, log))
 
 
-# Get the long associated with the given short from the cassandra
-# database and also stores the short and long into the redis database
+# Get the long associated with the given short from Cassandra
+# Also stores the short and long into the redis database
 def get_cassandra(short_url):
     
 	select_statement = """
@@ -67,6 +49,7 @@ def get_cassandra(short_url):
 	long_row = session.execute(select_statement, [short_url])
 
 	try:
+
 		long_url = long_row[0].long
 
 		if "http://" in long_url[0:7] or "https://" in long_url[0:8]:
@@ -76,15 +59,15 @@ def get_cassandra(short_url):
 		# Since short was not found in cache, store the short in cache
 		redis.set(short_url, long_url)
 		redis.expire(short_url, 180)
-
 		return long_url
+
 	except:
 		return None
 
 
 app = Flask(__name__)
 
-# Put route to store the short and longs into the cassandra database
+# PUT route to store the short and longs into the cassandra database
 @app.route("/", methods=['PUT'])
 def put_request():
     if request.method == 'PUT':
@@ -108,7 +91,7 @@ def put_request():
 		    return Response('Invalid Format\n', status=400)
 
 
-# Get route to obtain the long associated with the given short
+# GET route to obtain the long associated with the given short
 @app.route("/<short>", methods=['GET'])
 def get_request(short):
     
@@ -124,7 +107,11 @@ def get_request(short):
 				return redirect(long_url, code=307)
 
 		except RedisError:
-				return Response("An error occurred related to redis", 404)
+			logString = "Error related to Redis"
+			now = datetime.now()
+			nowStr = now.strftime("%d/%m/%Y %H:%M:%S")
+			insert_cassandraLOG(nowStr, logString)
+			return Response("An error occurred related to Redis", 404)
 
 		# Retrieve the long if available
 		long_url = get_cassandra(short)
@@ -132,12 +119,16 @@ def get_request(short):
 		# Checks to see if the short is in the main database and if its not
 		# returns a 404 error
 		if long_url:
-			logString = "Failed GET request made for short {}\n".format(short)
+			logString = "Successful GET request made for short {} correspinding to long {}\n".format(short,long_url)
 			now = datetime.now()
 			nowStr = now.strftime("%d/%m/%Y %H:%M:%S")
 			insert_cassandraLOG(nowStr, logString)
 			return redirect(long_url, code=307)
 		else:
+			logString = "Failed GET request made for short {}\n".format(short)
+			now = datetime.now()
+			nowStr = now.strftime("%d/%m/%Y %H:%M:%S")
+			insert_cassandraLOG(nowStr, logString)
 			return Response('Page does not exist\n', status=404)
 
 if __name__ == "__main__":

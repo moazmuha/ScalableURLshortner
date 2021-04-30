@@ -1,4 +1,10 @@
 #!/bin/bash
+"""
+Script to deploy the stack with all the necessary docker services. 
+Sample use: ./startDockerService user@192.168.22.130 user@192.168.22.131 ...
+Manager node will be the first node provided 
+"""
+
 USAGE="Usage: $0 USER@IP1 USER@IP2 USER@IP3 ..."
 
 if [ "$#" == "0" ]; then
@@ -34,6 +40,7 @@ while (( "$#" )); do
 	shift
 done
 
+# Building, pushing image and deploying stack
 docker login
 docker build -t moazmuha/urlshortner:latest .
 docker push moazmuha/urlshortner:latest

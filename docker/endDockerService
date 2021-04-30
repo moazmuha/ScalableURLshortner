@@ -1,4 +1,9 @@
 #!/bin/bash
+"""
+Script to take down stack with all the urlshortner docker services. 
+Sample use: ./endDockerService user@192.168.22.130 user@192.168.22.131 ...
+"""
+
 USAGE="Usage: $0 user@IP1 user@IP2 user@IP3 ..."
 
 if [ "$#" == "0" ]; then
