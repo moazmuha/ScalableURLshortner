@@ -24,12 +24,16 @@ Prerequisites: Atleast 2 linux systems with docker installed. If you get any doc
 ![Ubuntu_20 04 2_VM_LinuxVMImages_1-2021-04-30-17-01-38](https://user-images.githubusercontent.com/66569506/116753973-fba5b000-a9d5-11eb-992a-bd22d0466b98.png)
 7. Now open up cassandraCommands.txt. Copy paste each command in the shell to create the necessary Keyspaces and tables for Cassandra.
 8. Edit docker-compose.yml according to the comments. The data directory is where the Redis appendonly.aof file will be saved. You may also chose to chnage the number of replicas of the URL shorther web service. In this case we will be running 2 replicas on each system.
-9. Now run "./docker USER@IP1 USER@IP2". The manager node will be the first system provided. (Example: ./startDockerService ubuntu@192.168.22.131 kali@192.168.22.133)
+9. Now run "./startDockerService USER@IP1 USER@IP2". The manager node will be the first system provided. (Example: ./startDockerService ubuntu@192.168.22.131 kali@192.168.22.133)
 10. Head over to http://localhost:8080/. You should be able to see all your systems and the containers running. There are 2 urlshortner services running on each system since we set replicas: 4 and max_replicas_per_node: 2.
 ![Ubuntu_20 04 2_VM_LinuxVMImages_1-2021-04-30-13-01-06](https://user-images.githubusercontent.com/66569506/116756517-40cbe100-a9da-11eb-830f-a476670f6355.png)
 11. To add a record you can use an application like Postman or simple use curl to make a put command. (Example: curl -X PUT "http://localhost:4000/?short=myGithub&long=github.com/moazmuha"). In this example the short URL is myGithub and it will redirect to the longer URL is github.com/moazmuha
 12. You should get a "Succeded" response. To test whaether you record was saced successfully. Open a browser and head over to http://localhost:4000/myGithub where you would replace myGithub with your short URL. You should be redirected to your long URL.![Animation](https://user-images.githubusercontent.com/66569506/116758395-e896de00-a9dd-11eb-8b5d-86b51ede6179.gif)
+13. You can try to test scripts in docker/app/. You can also shutdown containers and keep making requests. Docker will automatically restart containers that shu
+14. To shutdown everthing simply run "./endDockerService USER@IP1 USER@IP2" and "./stopCassandraCluster USER@IP1 USER@IP2". (Example: ./endDockerService ubuntu@192.168.22.131 kali@192.168.22.133 and ./stopCassandraCluster ubuntu@192.168.22.131 kali@192.168.22.133)
 
-13. 
-14. 
+## Contributors
+•[Muhammad Moaz](https://github.com/moazmuha)
+•[Muhammad Huzaifa](https://github.com/waifa)
+•[Hamza Khan](https://www.linkedin.com/in/hamza-khan-46882b17b/)
 
