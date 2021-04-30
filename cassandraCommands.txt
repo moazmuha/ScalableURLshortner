@@ -1,0 +1,17 @@
+docker exec -it cassandra-node bash 
+cqlsh
+CREATE KEYSPACE records WITH replication = {'class': 'SimpleStrategy', 'replication_factor' : 2};
+USE records;
+CREATE TABLE urlshorts (
+	short text,
+	long text,
+	PRIMARY KEY (short, long)
+);
+
+CREATE KEYSPACE log WITH replication = {'class': 'SimpleStrategy', 'replication_factor' : 2};
+USE log;
+CREATE TABLE logs (
+	datetime text,
+	log text,
+	PRIMARY KEY (datetime, log)
+);
