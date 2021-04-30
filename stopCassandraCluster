@@ -1,8 +1,6 @@
 #!/bin/bash
-"""
-Script to set up Cassandra cluster.
-Sample use: ./stopCassandraCluster user@192.168.22.130 user@192.168.22.131 ...
-"""
+# Script to set up Cassandra cluster.
+# Sample use: ./stopCassandraCluster user@192.168.22.130 user@192.168.22.131 ...
 
 USAGE="Usage: $0 USER@IP1 USER@IP2 USER@IP3 ..."
 
