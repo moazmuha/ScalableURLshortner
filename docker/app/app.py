@@ -25,9 +25,10 @@ profile = ExecutionProfile(
 cluster = Cluster(execution_profiles={EXEC_PROFILE_DEFAULT: profile})
 '''
 # # IPS : 10.11.12.20, 10.11.12.21, 10.11.12.22, 10.11.12.233, 10.11.12,234
-cluster = Cluster(['10.11.12.20', '10.11.12.21', '10.11.12.22', '10.11.12.233', '10.11.12.234'])
+# cluster = Cluster(['10.11.12.20', '10.11.12.21', '10.11.12.22', '10.11.12.233', '10.11.12.234'])
+cluster = Cluster(['192.168.22.131', '192.168.22.129', '192.168.22.132'])
 # # session = cluster.connect()
-session = cluster.connect('a2')
+session = cluster.connect('records')
 sessionLOG = cluster.connect('log')
 
 

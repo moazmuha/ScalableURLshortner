@@ -1,5 +1,5 @@
 #!/bin/bash
-USAGE="Usage: $0 IP1 IP2 IP3 ..."
+USAGE="Usage: $0 USER@IP1 USER@IP2 USER@IP3 ..."
 
 if [ "$#" == "0" ]; then
 	echo "$USAGE"
@@ -8,11 +8,10 @@ fi
 
 docker container stop cassandra-node
 docker container rm cassandra-node
-MASTER="$1"
 shift
 
 while (( "$#" )); do
-	ssh student@$1 "docker container stop cassandra-node"
-	ssh student@$1 "docker container rm cassandra-node"
+	ssh $1 "docker container stop cassandra-node"
+	ssh $1 "docker container rm cassandra-node"
 	shift
 done

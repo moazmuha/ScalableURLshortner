@@ -2,17 +2,13 @@ version: "3.8"
 services:
   web:
     # replace username/repo:tag with your name and image details
-    image: obsoleete/a2_new:latest
+    image: moazmuha/urlshortner:latest
     deploy:
-      replicas: 13
+      replicas: 9
       placement:
-        max_replicas_per_node: 5
+        max_replicas_per_node: 3
       restart_policy:
         condition: on-failure
-      # resources:
-      #   limits:
-      #     cpus: "0.1"
-      #     memory: 50M
     ports:
       - "4000:80"
     networks:
@@ -34,7 +30,7 @@ services:
       - "6379:6379"
     volumes:
       # replace /home/docker/data with your data directory
-      - "/home/student/repo_a2group96/docker/data:/data"
+      - "/home/docker/data:/data"
     deploy:
       placement:
         constraints: [node.role == manager]

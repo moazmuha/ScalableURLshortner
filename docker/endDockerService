@@ -1,5 +1,5 @@
 #!/bin/bash
-USAGE="Usage: $0 IP1 IP2 IP3 ..."
+USAGE="Usage: $0 user@IP1 user@IP2 user@IP3 ..."
 
 if [ "$#" == "0" ]; then
 	echo "$USAGE"
@@ -9,8 +9,7 @@ fi
 docker stack rm urlShortner
 
 while (( "$#" )); do
-	
-	ssh student@$1 "docker swarm leave --force"
+	ssh $1 "docker swarm leave --force"
 	shift
 done
 

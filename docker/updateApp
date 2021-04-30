@@ -1,6 +1,6 @@
 #!/bin/bash
-docker build -t obsoleete/a2_new:latest .
-docker push obsoleete/a2_new:latest
+docker build -t moazmuha/urlshortner:latest .
+docker push moazmuha/urlshortner:latest
 docker stack deploy -c docker-compose.yml urlShortner
 echo "Wait 15 seconds for the update to deploy"
 
