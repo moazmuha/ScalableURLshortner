@@ -1,9 +1,7 @@
 #!/bin/bash
-"""
-Script to set up Cassandra cluster.
-Sample use: ./startCassandraCluster user@192.168.22.130 user@192.168.22.131 ...
-Master node will be on the first server provided
-"""
+# Script to set up Cassandra cluster.
+# Sample use: ./startCassandraCluster user@192.168.22.130 user@192.168.22.131 ...
+# Master node will be on the first server provided
 
 USAGE="Usage: $0 USER@IP1 USER@IP2 USER@IP3 ..."
 
